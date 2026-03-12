@@ -1,0 +1,21 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+    open-pull-requests-limit: 5
+
+    commit-message:
+      prefix: "deps"
+
+    allow:
+      - dependency-type: "direct"
+
+    reviewers:
+      - o85269239-source
+
+    labels:
+      - "dependencies"
+      - "automated"
