@@ -11,8 +11,8 @@ const App = () => {
   return (
     <div>
       <Routes>
-        <Route path="/" element={<HomePage />}
-        <Route path="/room/:id" element={name && roomId? <ChatPage />: <Navigate to="/"  />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/room/:id" element={name && roomId? <ChatPage />: <Navigate to="/" />} />
       </Routes>
       <Toaster />
     </div>
