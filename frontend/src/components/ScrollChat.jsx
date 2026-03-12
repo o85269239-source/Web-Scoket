@@ -23,7 +23,9 @@ export const ScrollContainer = ({ children }) => {
 
         outerRef.current.scrollTo({
             top: innerHeight - outerHeight,
-            left: 0,
+            left: 0
+        });
+    }, [children]);
             behavior: "smooth"
         });
     }, [children]);

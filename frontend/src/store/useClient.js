@@ -1,29 +1,46 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from "zustand/middleware";
-import { io } from "socket.io-client"
+import { io } from "socket.io-client";
 
-const SERVER_URL = import.meta.env.MODE==="development" ?"http://localhost:3000":"https://chat-app-5d7t.onrender.com"
+const SERVER_URL = import.meta.env.MODE === "development"
+  ? "http://localhost:3000"
+  : "https://chat-app-5d7t.onrender.com";
 
+export const useClient = create(
+  persist(
+    (set, get) => ({
+      name: "",
+      setName: (name) => set({ name }),
+      roomId: "",
+      setRoomId: (roomId) => set({ roomId }),
+      socket: null,
+      setSocket: (socket) => set({ socket }),
+      connectSocket: (name, roomId) => {
+        const existingSocket = get().socket;
+        const sameIdentity = get().name === name && get().roomId === roomId;
 
-export const useClient = create(persist(
-  (set, get) => ({
-    name: "",
-    setName: (name) => set({ name }),
-    roomId: "",
-    setRoomId: (roomId) => set({ roomId }),
-    socket: null,
-    setSocket: (socket) => set({ socket }),
-    connectSocket: (name, roomId) => {
-      const existingSocket = get().socket;
-      const sameIdentity = get().name === name && get().roomId === roomId;
+        if (existingSocket && sameIdentity && existingSocket.connected) {
+          return;
+        }
 
-      if (existingSocket && sameIdentity && existingSocket.connected) {
-        return;
-      }
+        if (existingSocket) {
+          try { existingSocket.off('receive-message'); } catch {}
+          existingSocket.disconnect();
+        }
 
-      if (existingSocket) {
-        try { existingSocket.off('receive-message'); } catch {}
-        existingSocket.disconnect();
+        const socket = io(SERVER_URL, { query: { name, roomId } });
+        socket.on("connect", () => {
+          set({ socket, name, roomId });
+        });
+        socket.on("receive-message", (message) => {});
+      },
+    }),
+    {
+      name: "client",
+      storage: createJSONStorage(() => localStorage),
+    }
+  )
+);
       }
 
       const socket = io(SERVER_URL, {

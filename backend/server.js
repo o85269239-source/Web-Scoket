@@ -21,9 +21,9 @@ app.use(cors());
 const userId_Name={}
 let roomIds = new Set();
 
-export const isPresent=(roomId)=>{
-    return roomIds.has(roomId
-}
+export const isPresent = (roomId) => {
+    return roomIds.has(roomId);
+};
 
 export const createRoom=()=>{
     let roomId = Math.random().toString(36).substring(2,7)
